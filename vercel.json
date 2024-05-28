@@ -1,6 +1,6 @@
 {
 	"crons": [
-		{ "path": "/send-traffic/us", "schedule": "*/15 0-23 * * 1-5" },
-		{ "path": "/send-traffic/uk", "schedule": "*/15 0-23 * * 1-5" }
+		{ "path": "/send-traffic/us", "schedule": "*/1 0-23 * * 1-5" },
+		{ "path": "/send-traffic/uk", "schedule": "*/1 0-23 * * 1-5" }
 	]
 }
