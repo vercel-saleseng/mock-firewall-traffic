@@ -1,4 +1,5 @@
 import { get } from '@vercel/edge-config';
+import { waitUntil } from '@vercel/functions';
 
 type MockTrafficConfig = {
 	siteUrl: string;
@@ -6,13 +7,18 @@ type MockTrafficConfig = {
 	numConcurrency: number;
 };
 
-export const sendTraffic = async () => {
+export const mockTraffic = async () => {
 	const mockTrafficConfig = await get<MockTrafficConfig>('mockTraffic');
 	if (!mockTrafficConfig) {
 		return new Response('Missing mockTraffic config', { status: 400 });
 	}
 
-	const { siteUrl, numRequests, numConcurrency } = mockTrafficConfig;
+	waitUntil(sendTraffic(mockTrafficConfig));
+	return new Response('Processing traffic simulation w/config ' + JSON.stringify(mockTrafficConfig));
+};
+
+export const sendTraffic = async (config: MockTrafficConfig) => {
+	const { siteUrl, numRequests, numConcurrency } = config;
 
 	const createRequest = async (): Promise<void> => {
 		try {
@@ -46,9 +52,9 @@ export const sendTraffic = async () => {
 			requests.map((req) => req),
 			numConcurrency
 		);
-		return new Response('Traffic simulation completed', { status: 200 });
+		return { status: 200 };
 	} catch (error) {
 		console.error('Traffic simulation failed', error);
-		return new Response('Traffic simulation failed', { status: 500 });
+		return { status: 500 };
 	}
 };
